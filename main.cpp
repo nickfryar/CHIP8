@@ -14,6 +14,8 @@ int main(int argc, char* argv[]) {
     SDL_Window* window = NULL;
     SDL_Surface* surface = NULL;
 
+
+
     // Initialize SDL
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
         fprintf(stderr, "Unable to initialize SDL: %s\n", SDL_GetError());
@@ -33,6 +35,10 @@ int main(int argc, char* argv[]) {
 
     // Start
     c8.run();
+
+    // Quit
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 
     return 0;
 }
