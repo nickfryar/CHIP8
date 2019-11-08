@@ -1,6 +1,6 @@
 CC = g++
 
-SOURCE = main.cpp
+SOURCE = main.cpp chip8.cpp
 
 INCLUDE_PATHS = -IC:\sdl\include\SDL2
 

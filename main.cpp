@@ -2,10 +2,15 @@
 #include <stdlib.h>
 #include <SDL.h>
 
+#include "chip8.h"
+
 const int WIDTH = 500;
 const int HEIGHT = 500;
 
 int main(int argc, char* argv[]) {
+
+    chip8 c8;
+
     SDL_Window* window = NULL;
     SDL_Surface* surface = NULL;
 
@@ -26,9 +31,8 @@ int main(int argc, char* argv[]) {
     SDL_FillRect(surface, NULL, SDL_MapRGB(surface->format, 0x0, 0x0, 0x0));
     SDL_UpdateWindowSurface(window);
 
-    #ifdef DEBUG
-    SDL_Delay(1000);
-    #endif
+    // Start
+    c8.run();
 
     return 0;
 }
