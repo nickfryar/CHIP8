@@ -6,6 +6,8 @@
 #define u8 uint8_t
 #define u16 uint16_t
 
+#define SIZE 0x1000
+
 class chip8 {
 private:
     // Registers
@@ -17,7 +19,7 @@ private:
     u8 sound_timer;
 
     // Memory
-    u8 mem[0x1000];
+    u8 mem[SIZE];
     u8 stack[0x30];
 
     // Input + Graphics
@@ -63,6 +65,8 @@ private:
 
 public:
     chip8();
+    long getSize();
+    void load(char*, long);
     void run();
 };
 
