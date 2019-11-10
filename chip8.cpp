@@ -63,25 +63,62 @@ void chip8::cycle() {
     draw_ = false;
 
     if (running_) {
-        u16 opcode = mem[pc];
-
+        u16 opcode = (mem[pc] << 8) | mem[pc+1];
+        
         switch (opcode & 0xf000) {
-            case 0x0000: break;
-            case 0x1000: break;
-            case 0x2000: break;
-            case 0x3000: break;
-            case 0x4000: break;
-            case 0x5000: break;
-            case 0x6000: break;
-            case 0x7000: break;
-            case 0x8000: break;
-            case 0x9000: break;
-            case 0xa000: break;
-            case 0xb000: break;
-            case 0xc000: break;
-            case 0xd000: break;
-            case 0xe000: break;
-            case 0xf000: break;
+            case 0x0000:
+                switch (opcode & 0x0fff) {
+                    case 0x00E0: op00E0(); break;
+                    case 0x00EE: op00EE(); break;
+                    default: op0NNN();
+                }
+                break;
+            case 0x1000: op1NNN(opcode); break;
+            case 0x2000: op2NNN(opcode); break;
+            case 0x3000: op3XNN(opcode); break;
+            case 0x4000: op4XNN(opcode); break;
+            case 0x5000: op5XY0(opcode); break;
+            case 0x6000: op6XNN(opcode); break;
+            case 0x7000: op7XNN(opcode); break;
+            case 0x8000:
+                switch (opcode & 0x000f) {
+                    case 0x0000: op8XY0(opcode); break;
+                    case 0x0001: op8XY1(opcode); break;
+                    case 0x0002: op8XY2(opcode); break;
+                    case 0x0003: op8XY3(opcode); break;
+                    case 0x0004: op8XY4(opcode); break;
+                    case 0x0005: op8XY5(opcode); break;
+                    case 0x0006: op8XY6(opcode); break;
+                    case 0x0007: op8XY7(opcode); break;
+                    case 0x000E: op8XYE(opcode); break;
+                    default: quit();
+                }
+                break;
+            case 0x9000: op9XY0(opcode); break;
+            case 0xa000: opANNN(opcode); break;
+            case 0xb000: opBNNN(opcode); break;
+            case 0xc000: opCXNN(opcode); break;
+            case 0xd000: opDXYN(opcode); break;
+            case 0xe000:
+                switch (opcode & 0x00ff) {
+                    case 0x009E: opEX9E(opcode); break;
+                    case 0x00A1: opEXA1(opcode); break;
+                    default: quit();
+                }
+            case 0xf000:
+                switch (opcode & 0x00ff) {
+                    case 0x0007: opFX07(opcode); break;
+                    case 0x000A: opFX0A(opcode); break;
+                    case 0x0015: opFX15(opcode); break;
+                    case 0x0018: opFX18(opcode); break;
+                    case 0x001E: opFX1E(opcode); break;
+                    case 0x0029: opFX29(opcode); break;
+                    case 0x0033: opFX33(opcode); break;
+                    case 0x0055: opFX55(opcode); break;
+                    case 0x0065: opFX65(opcode); break;
+                    default: quit();
+                }
+            default: quit();
         }
     }
 }
