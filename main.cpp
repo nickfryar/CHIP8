@@ -4,8 +4,9 @@
 
 #include "chip8.h"
 
-const int WIDTH = 500;
-const int HEIGHT = 500;
+const int WIDTH = 64;
+const int HEIGHT = 32;
+const int SCALE = 8;
 
 int main(int argc, char* argv[]) {
 
@@ -13,12 +14,23 @@ int main(int argc, char* argv[]) {
 
     SDL_Window* window = NULL;
     SDL_Surface* surface = NULL;
+    SDL_Surface* surface_native = NULL;
+
+    int scale = SCALE;
 
     SDL_Event e;
 
     if (argc < 2) {
         fprintf(stdout, "No rom specified.\n");
         exit(EXIT_SUCCESS);
+    }
+
+    if (argc > 2) {
+        scale = atoi(argv[2]);
+        if (scale < 1 || scale > 20) {
+            fprintf(stderr, "Invalid scale selection: %d. Using default.\n", scale);
+            scale = SCALE;
+        }
     }
 
     // Initialize SDL
@@ -28,7 +40,7 @@ int main(int argc, char* argv[]) {
     }
 
     // Create window
-    window = SDL_CreateWindow("CHIP-8", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("CHIP-8", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH * scale, HEIGHT * scale, SDL_WINDOW_SHOWN);
     if(window == NULL) {
         fprintf(stderr, "Unable to create window: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
@@ -36,6 +48,8 @@ int main(int argc, char* argv[]) {
     
     surface = SDL_GetWindowSurface(window);
     SDL_FillRect(surface, NULL, SDL_MapRGB(surface->format, 0x0, 0x0, 0x0));
+    surface_native = SDL_CreateRGBSurface(0, WIDTH, HEIGHT, 32, 0, 0, 0, 0);
+    
     SDL_UpdateWindowSurface(window);
 
     // Load rom
@@ -98,6 +112,18 @@ int main(int argc, char* argv[]) {
         }
 
         c8.cycle();
+
+        // Draw
+        if (c8.draw()) {
+            u32* pixels = (u32*)surface->pixels;
+
+            for (int i = 0; i < WIDTH*HEIGHT; i++) {
+                *pixels = (c8.pixel(i)) ? 0xffffffff : 0xff000000;
+                pixels++;
+                SDL_BlitScaled(surface_native, NULL, surface, NULL);
+                SDL_UpdateWindowSurface(window);
+            }
+        }
     }
 
     // Quit

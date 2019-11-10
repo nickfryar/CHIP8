@@ -7,6 +7,7 @@
 
 #define u8 uint8_t
 #define u16 uint16_t
+#define u32 uint32_t
 
 #define SIZE    0x1000
 
@@ -33,9 +34,10 @@ private:
 
     // Input + Graphics
     u8 input[0x10];
-    u8 graphics[0x30 * 0x20];
+    u8 graphics[0x800];
 
     bool running_;
+    bool draw_;
 
     // Character set
     u8 font[0x50] = {
@@ -99,6 +101,8 @@ public:
     long getSize();
     void load(char*, long);
     bool running();
+    bool draw();
+    u8 pixel(int);
     void quit();
     void clearKeys();
     void setKey(u8);

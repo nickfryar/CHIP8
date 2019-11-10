@@ -37,6 +37,14 @@ bool chip8::running() {
     return running_;
 }
 
+bool chip8::draw() {
+    return draw_;
+}
+
+u8 chip8::pixel(int p) {
+    return graphics[p];
+}
+
 void chip8::quit() {
     running_ = false;
 }
@@ -52,6 +60,8 @@ void chip8::setKey(u8 key) {
 }
 
 void chip8::cycle() {
+    draw_ = false;
+
     if (running_) {
         u16 opcode = mem[pc];
 
@@ -81,7 +91,11 @@ void chip8::op0NNN() {
 }
 
 void chip8::op00E0() {
-    // CLear the screen
+    for (int i = 0; i < 0x800; i++) {
+        graphics[i] = 0;
+    }
+    draw_ = true;
+    pc += 2;
 }
 
 void chip8::op00EE() {
@@ -226,7 +240,24 @@ void chip8::opCXNN(u16 opcode) {
 }
 
 void chip8::opDXYN(u16 opcode) {
-    // TODO: draw a sprite
+    u16 height = opcode & 0x000F;
+    u16 pixel;
+
+    VF = 0;
+    for (int y = 0; y < height; y++) {
+        pixel = mem[i + y];
+        for (int x = 0; x < 8; x++) {
+            if ((pixel & (0x80 >> x)) != 0) {
+                if (graphics[(VX + x + ((VY + y) * 0x40))] == 1) {
+                    VF = 1;
+                }
+                graphics[VX + x + ((VY + y) * 0x40)] ^= 1;
+            }
+        }
+    }
+
+    draw_ = true;
+    pc += 2;
 }
 
 void chip8::opEX9E(u16 opcode) {
