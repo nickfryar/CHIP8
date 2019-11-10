@@ -18,8 +18,6 @@ int main(int argc, char* argv[]) {
 
     int scale = SCALE;
 
-    SDL_Event e;
-
     if (argc < 2) {
         fprintf(stdout, "No rom specified.\n");
         exit(EXIT_SUCCESS);
@@ -81,48 +79,47 @@ int main(int argc, char* argv[]) {
     free(buffer);
 
     // Start
+    const Uint8 *state = SDL_GetKeyboardState(NULL);
     while (c8.running()) {
         
         // Handle input
-        c8.clearKeys();
+        SDL_Event e;
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 c8.quit();
             }
-            else if (e.type == SDL_KEYDOWN) {
-                switch(e.key.keysym.sym) {
-                    case SDLK_1: c8.setKey(0x0); break;
-                    case SDLK_2: c8.setKey(0x1); break;
-                    case SDLK_3: c8.setKey(0x2); break;
-                    case SDLK_4: c8.setKey(0x3); break;
-                    case SDLK_q: c8.setKey(0x4); break;
-                    case SDLK_w: c8.setKey(0x5); break;
-                    case SDLK_e: c8.setKey(0x6); break;
-                    case SDLK_r: c8.setKey(0x7); break;
-                    case SDLK_a: c8.setKey(0x8); break;
-                    case SDLK_s: c8.setKey(0x9); break;
-                    case SDLK_d: c8.setKey(0xa); break;
-                    case SDLK_f: c8.setKey(0xb); break;
-                    case SDLK_z: c8.setKey(0xc); break;
-                    case SDLK_x: c8.setKey(0xd); break;
-                    case SDLK_c: c8.setKey(0xe); break;
-                    case SDLK_v: c8.setKey(0xf); break;
-                }
-            }
         }
+        if (state[SDL_SCANCODE_0]) c8.setKey(0x0); else c8.clearKey(0x0);
+        if (state[SDL_SCANCODE_1]) c8.setKey(0x1); else c8.clearKey(0x1);
+        if (state[SDL_SCANCODE_2]) c8.setKey(0x2); else c8.clearKey(0x2);
+        if (state[SDL_SCANCODE_3]) c8.setKey(0x3); else c8.clearKey(0x3);
+        if (state[SDL_SCANCODE_Q]) c8.setKey(0x4); else c8.clearKey(0x4);
+        if (state[SDL_SCANCODE_W]) c8.setKey(0x5); else c8.clearKey(0x5);
+        if (state[SDL_SCANCODE_E]) c8.setKey(0x6); else c8.clearKey(0x6);
+        if (state[SDL_SCANCODE_E]) c8.setKey(0x7); else c8.clearKey(0x7);
+        if (state[SDL_SCANCODE_A]) c8.setKey(0x8); else c8.clearKey(0x8);
+        if (state[SDL_SCANCODE_S]) c8.setKey(0x9); else c8.clearKey(0x9);
+        if (state[SDL_SCANCODE_D]) c8.setKey(0xa); else c8.clearKey(0xa);
+        if (state[SDL_SCANCODE_F]) c8.setKey(0xb); else c8.clearKey(0xb);
+        if (state[SDL_SCANCODE_Z]) c8.setKey(0xc); else c8.clearKey(0xc);
+        if (state[SDL_SCANCODE_X]) c8.setKey(0xd); else c8.clearKey(0xd);
+        if (state[SDL_SCANCODE_C]) c8.setKey(0xe); else c8.clearKey(0xe);
+        if (state[SDL_SCANCODE_V]) c8.setKey(0xf); else c8.clearKey(0xf);
+        if (state[SDL_SCANCODE_0]) c8.quit();
 
         c8.cycle();
 
         // Draw
         if (c8.draw()) {
-            u32* pixels = (u32*)surface->pixels;
+            u32* pixels = (u32*)surface_native->pixels;
 
             for (int i = 0; i < WIDTH*HEIGHT; i++) {
                 *pixels = (c8.pixel(i)) ? 0xffffffff : 0xff000000;
+
                 pixels++;
-                SDL_BlitScaled(surface_native, NULL, surface, NULL);
-                SDL_UpdateWindowSurface(window);
             }
+            SDL_BlitScaled(surface_native, NULL, surface, NULL);
+            SDL_UpdateWindowSurface(window);
         }
     }
 

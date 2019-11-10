@@ -14,6 +14,21 @@ chip8::chip8() {
 
     running_ = true;
 
+    // Clear memory
+    for (int i = 0; i < SIZE; i++) {
+        mem[i] = 0;
+    }
+
+    // Clear stack
+    for (int i = 0; i < 0x30; i++) {
+        stack[i] = 0;
+    }
+
+    // Clear screen
+    for (int i = 0; i < 0x800; i++) {
+        graphics[i] = 0;
+    }
+
     // Load character set into memory
     for (int i = 0; i < 0x50; i++) {
         mem[i] = font[i];
@@ -49,14 +64,12 @@ void chip8::quit() {
     running_ = false;
 }
 
-void chip8::clearKeys() {
-    for (int i = 0; i < 0x10; i++) {
-        input[i] = 0;
-    }
-}
-
 void chip8::setKey(u8 key) {
     input[key] = 1;
+}
+
+void chip8::clearKey(u8 key) {
+    input[key] = 0;
 }
 
 void chip8::cycle() {
@@ -64,7 +77,7 @@ void chip8::cycle() {
 
     if (running_) {
         u16 opcode = (mem[pc] << 8) | mem[pc+1];
-        
+
         switch (opcode & 0xf000) {
             case 0x0000:
                 switch (opcode & 0x0fff) {
@@ -105,6 +118,7 @@ void chip8::cycle() {
                     case 0x00A1: opEXA1(opcode); break;
                     default: quit();
                 }
+                break;
             case 0xf000:
                 switch (opcode & 0x00ff) {
                     case 0x0007: opFX07(opcode); break;
@@ -118,6 +132,7 @@ void chip8::cycle() {
                     case 0x0065: opFX65(opcode); break;
                     default: quit();
                 }
+                break;
             default: quit();
         }
     }
@@ -138,7 +153,6 @@ void chip8::op00E0() {
 void chip8::op00EE() {
     sp--;
     pc = stack[sp];
-    pc += 2;
 }
 
 void chip8::op1NNN(u16 opcode) {
@@ -146,7 +160,7 @@ void chip8::op1NNN(u16 opcode) {
 }
 
 void chip8::op2NNN(u16 opcode) {
-    stack[sp] = pc;
+    stack[sp] = pc+2;
     sp++;
     pc = NNN;
 }
@@ -317,6 +331,7 @@ void chip8::opEXA1(u16 opcode) {
 
 void chip8::opFX07(u16 opcode) {
     VX = delay_timer;
+    pc += 2;
 }
 
 void chip8::opFX0A(u16 opcode) {

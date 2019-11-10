@@ -30,7 +30,7 @@ private:
 
     // Memory
     u8 mem[SIZE];
-    u8 stack[0x30];
+    u16 stack[0x30];
 
     // Input + Graphics
     u8 input[0x10];
@@ -104,8 +104,8 @@ public:
     bool draw();
     u8 pixel(int);
     void quit();
-    void clearKeys();
     void setKey(u8);
+    void clearKey(u8);
     void cycle();
 };
 
