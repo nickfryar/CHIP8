@@ -5,7 +5,16 @@
 #endif
 
 chip8::chip8() {
-    // TODO
+    pc = 0x200;
+    i = 0;
+    sp = 0;
+
+    delay_timer = 0;
+    sound_timer = 0;
+
+    running_ = true;
+
+    srand(time(NULL));
 }
 
 long chip8::getSize() {

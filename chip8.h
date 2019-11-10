@@ -1,8 +1,9 @@
 #ifndef CHIP8_H
 #define CHIP8_H
 
-#include <inttypes.h>
+#include <cinttypes>
 #include <random>
+#include <ctime>
 
 #define u8 uint8_t
 #define u16 uint16_t
