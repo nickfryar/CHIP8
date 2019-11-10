@@ -14,6 +14,8 @@ int main(int argc, char* argv[]) {
     SDL_Window* window = NULL;
     SDL_Surface* surface = NULL;
 
+    SDL_Event e;
+
     if (argc < 2) {
         fprintf(stdout, "No rom specified.\n");
         exit(EXIT_SUCCESS);
@@ -65,7 +67,38 @@ int main(int argc, char* argv[]) {
     free(buffer);
 
     // Start
-    c8.run();
+    while (c8.running()) {
+        
+        // Handle input
+        c8.clearKeys();
+        while (SDL_PollEvent(&e) != 0) {
+            if (e.type == SDL_QUIT) {
+                c8.quit();
+            }
+            else if (e.type == SDL_KEYDOWN) {
+                switch(e.key.keysym.sym) {
+                    case SDLK_1: c8.setKey(0x0); break;
+                    case SDLK_2: c8.setKey(0x1); break;
+                    case SDLK_3: c8.setKey(0x2); break;
+                    case SDLK_4: c8.setKey(0x3); break;
+                    case SDLK_q: c8.setKey(0x4); break;
+                    case SDLK_w: c8.setKey(0x5); break;
+                    case SDLK_e: c8.setKey(0x6); break;
+                    case SDLK_r: c8.setKey(0x7); break;
+                    case SDLK_a: c8.setKey(0x8); break;
+                    case SDLK_s: c8.setKey(0x9); break;
+                    case SDLK_d: c8.setKey(0xa); break;
+                    case SDLK_f: c8.setKey(0xb); break;
+                    case SDLK_z: c8.setKey(0xc); break;
+                    case SDLK_x: c8.setKey(0xd); break;
+                    case SDLK_c: c8.setKey(0xe); break;
+                    case SDLK_v: c8.setKey(0xf); break;
+                }
+            }
+        }
+
+        c8.cycle();
+    }
 
     // Quit
     SDL_DestroyWindow(window);
