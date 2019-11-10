@@ -14,6 +14,11 @@ chip8::chip8() {
 
     running_ = true;
 
+    // Load character set into memory
+    for (int i = 0; i < 0x50; i++) {
+        mem[i] = font[i];
+    }
+
     srand(time(NULL));
 }
 
@@ -278,7 +283,7 @@ void chip8::opFX1E(u16 opcode) {
 }
 
 void chip8::opFX29(u16 opcode) {
-    // set i to location of character in VX
+    i = VX * 0x5;
     pc += 2;
 }
 
