@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
         if (state[SDL_SCANCODE_X]) c8.setKey(0xd); else c8.clearKey(0xd);
         if (state[SDL_SCANCODE_C]) c8.setKey(0xe); else c8.clearKey(0xe);
         if (state[SDL_SCANCODE_V]) c8.setKey(0xf); else c8.clearKey(0xf);
-        if (state[SDL_SCANCODE_0]) c8.quit();
+        if (state[SDL_SCANCODE_ESCAPE]) c8.quit();
 
         c8.cycle();
 
